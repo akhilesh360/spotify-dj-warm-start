@@ -2,6 +2,8 @@
 
 > **PM case study + working prototype** · Music streaming / AI personalization · Spotify Extended Streaming History schema (synthetic sample included; run it on your own export)
 
+**▶ 60-second demo (plays automatically)**
+
 ![60-second walkthrough](docs/walkthrough.gif)
 
 **▶ [Live demo](https://akhilesh360.github.io/spotify-dj-warm-start/)** · **🎬 [Full video](docs/demo.webm)** · [Demo script](docs/demo-script.md)
@@ -9,6 +11,15 @@
 ## How it works
 
 ![How it works](docs/flow.png)
+
+### Data
+
+| | |
+|---|---|
+| **Dataset** | Synthetic sample in the exact schema of Spotify's [Extended Streaming History](https://support.spotify.com/us/article/understanding-my-data/) export |
+| **Why not public data** | Spotify's real skip dataset (Music Streaming Sessions Dataset) requires an AIcrowd account and its terms do not allow redistribution. Last.fm 1K was tested and rejected: it only logs plays past the scrobble point, so 30-second skips are invisible (measured early-skip rate about 0.2%) |
+| **Real or simulated** | Analysis pipeline and bandit: built for real exports, **results shown are synthetic** and labelled on every chart |
+| **Run on real data** | Request your own export from Spotify (Privacy settings) and run `python src/analyze.py data/my_*.json` |
 
 ## 1. User and problem
 People who open AI DJ for low-effort listening while commuting, working or cooking. They want music they like right away, and they are open to new music once they trust the DJ. Today the DJ often opens by exploring. When that first pick misses, people skip it, and an early miss tells them the DJ doesn't know them.
@@ -72,4 +83,3 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 Demo: open `docs/index.html`. No build step.
 
-**About**: Built by Sai Akhilesh Veldi. [Portfolio](#) · [LinkedIn](https://www.linkedin.com/in/akhileshsai/) · MIT License · Not affiliated with Spotify.
