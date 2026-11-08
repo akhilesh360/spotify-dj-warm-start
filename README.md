@@ -6,6 +6,17 @@
 
 **▶ [Live demo](https://akhilesh360.github.io/spotify-dj-warm-start/)** · **🎬 [60-second walkthrough](docs/demo.webm)** · [Demo script](docs/demo-script.md)
 
+## How it works
+
+```mermaid
+flowchart LR
+  A["😣 Problem<br/>First DJ pick misses → skip"] --> B["📊 Data<br/>Streaming history:<br/>skips by session position"]
+  B --> C["💡 Insight<br/>Familiar openers<br/>get skipped less"]
+  C --> D["🎵 Feature<br/>Warm start +<br/>'Less like this'"]
+  D --> E["⭐ North Star<br/>First-30s skip rate"]
+  E --> F["🧪 A/B test<br/>Ship if skips ↓,<br/>discovery holds"]
+```
+
 ## 1. User and problem
 People who open AI DJ for low-effort listening while commuting, working or cooking. They want music they like right away, and they are open to new music once they trust the DJ. Today the DJ often opens by exploring. When that first pick misses, people skip it, and an early miss tells them the DJ doesn't know them.
 
