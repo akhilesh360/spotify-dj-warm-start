@@ -33,6 +33,9 @@ li:first-child{border-top:0}.mini{width:36px;height:36px;border-radius:6px;flex:
 .small{font-size:13px;color:var(--mute)}h2{font-size:16px;margin:0 0 6px}
 .note{margin-top:16px;font-size:12px;color:var(--mute);border-left:3px solid var(--warn);padding-left:10px}
 .theme{position:fixed;top:12px;right:12px;padding:6px 10px;font-size:13px}
+.bar{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.track{height:10px;background:var(--chip);border-radius:99px;overflow:hidden}.fill{height:100%;background:var(--acc);width:0}.fill.new{background:#7c5cff}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 </style></head><body>
 <button class="theme" id="theme" aria-label="Toggle theme">Theme</button>
 <main>
@@ -57,7 +60,14 @@ li:first-child{border-top:0}.mini{width:36px;height:36px;border-radius:6px;flex:
  <div class="small">Skip rate in the first 30 seconds of a session. Guardrails: session length, discovery share (new tracks played ≥30s), "less like this" usage.</div>
  <h2 style="margin-top:20px">Not building</h2><div class="small">Voice chat with the DJ.</div>
  <div class="note">Mock catalog and illustrative risk scores. Not Spotify data, not real results.</div>
-</aside></div></main>
+</aside></div>
+<section class="card" style="margin-top:20px" aria-label="Bandit">
+ <h2>Bandit: which opener, when?</h2>
+ <div class="small">A Thompson sampler picks the opener per time of day: familiar favorite or new discovery. Each arm keeps a Beta posterior on "not skipped in 30 s", and the sampler plays the arm with the highest random draw, so the weaker arm still gets tried now and then.</div>
+ <div class="controls"><button class="primary" id="banditGo">Simulate 500 sessions</button><span class="small" id="banditStat"></span></div>
+ <div class="bgrid" id="bandit"></div>
+ <div class="note">Simulation with assumed skip probabilities (synthetic). Label shows how often the sampler picked each arm; the bar is its estimated keep rate.</div>
+</section></main>
 <script>
 const G=["Indie","Hip-hop","Lo-fi","Pop","Jazz"],C={Indie:"#7c5cff",["Hip-hop"]:"#e5484d",["Lo-fi"]:"#3e9bd6",Pop:"#e2a400",Jazz:"#12a594"};
 const CAT=[["Golden Hour Drive","Kite Lines","Indie",1],["Paper Planes Again","Kite Lines","Indie",0],["Late Bus Home","Sora Blue","Lo-fi",1],["Rain on Tin","Sora Blue","Lo-fi",0],["Corner Store","MC Atlas","Hip-hop",0],["Big Steps","MC Atlas","Hip-hop",1],["Neon Gum","Lia Park","Pop",0],["Two Left Feet","Lia Park","Pop",0],["Blue Room","The Quiet Five","Jazz",0],["Moth Waltz","The Quiet Five","Jazz",0],["Static Bloom","Fernway","Indie",0],["Slow Orbit","Pillowtalk","Lo-fi",0]]
@@ -82,5 +92,16 @@ const queue_el=document.getElementById("queue");
 less.onclick=()=>{disliked[now.g]=(disliked[now.g]||0)+1;now=queue.shift()||now;queue=[...queue].sort((a,b)=>score(a)-score(b));render();};
 reset.onclick=()=>{disliked={};build();};warm.onchange=build;
 theme.onclick=()=>{const d=document.documentElement,cur=d.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");d.dataset.theme=cur==="dark"?"light":"dark";};
+const BK=["Morning","Afternoon","Evening","Late night"],BW=[.3,.3,.25,.15],SK=[[.23,.55],[.23,.45],[.30,.22],[.27,.25]];
+function gam(k){if(k<1)return gam(k+1)*Math.pow(Math.random(),1/k);const d=k-1/3,c=1/Math.sqrt(9*d);for(;;){let x,v;do{const u1=Math.random()||1e-12,u2=Math.random();x=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);v=1+c*x}while(v<=0);v=v*v*v;const u=Math.random();if(Math.log(u)<.5*x*x+d-d*v+d*Math.log(v))return d*v}}
+const beta=(a,b)=>{const x=gam(a);return x/(x+gam(b))};
+function drawBandit(st,n,sk,disc){bandit.innerHTML=BK.map((k,c)=>{const tot=st[c][0].n+st[c][1].n||1;return `<div><div style="font-weight:600;font-size:14px">${k}</div>`+["Familiar","New"].map((nm,a)=>{const p=st[c][a],m=p.a/(p.a+p.b);return `<div class="bar"><span>${nm} ${Math.round(100*p.n/tot)}%</span><div class="track"><div class="fill ${a?"new":""}" style="width:${m*100}%"></div></div><span>${Math.round(m*100)}%</span></div>`}).join("")+"</div>"}).join("");
+ banditStat.textContent=n?`${n} sessions: opener skip ${Math.round(100*sk/n)}%, discovery share ${Math.round(100*disc/n)}% (synthetic)`:"";}
+const fresh=()=>BK.map(()=>[{a:1,b:1,n:0},{a:1,b:1,n:0}]);drawBandit(fresh(),0);
+let bTimer;banditGo.onclick=()=>{clearInterval(bTimer);const st=fresh();let n=0,sk=0,disc=0;
+ bTimer=setInterval(()=>{for(let k=0;k<10&&n<500;k++,n++){let r=Math.random(),c=0;while(c<3&&r>BW[c]){r-=BW[c];c++}
+  const arm=beta(st[c][1].a,st[c][1].b)>beta(st[c][0].a,st[c][0].b)?1:0,s=Math.random()<SK[c][arm];
+  st[c][arm][s?"b":"a"]++;st[c][arm].n++;sk+=s;disc+=(arm===1&&!s);}
+  drawBandit(st,n,sk,disc);if(n>=500)clearInterval(bTimer);},30);};
 build();
 </script></body></html>
