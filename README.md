@@ -12,6 +12,8 @@
 
 ![How it works](docs/flow.png)
 
+![Results at a glance](docs/results.png)
+
 ### Data
 
 | | |
@@ -35,6 +37,9 @@ More sessions start with a song the listener keeps playing, so they trust the DJ
 - **Not built: voice chat with the DJ.** It costs a lot to build, it's hard to get right, and it doesn't fix the first-pick miss. A single tap gives a clearer signal for much less effort.
 
 ## 4. North Star metric
+
+![Metrics framework](docs/metrics.png)
+
 **First-30-second skip rate:** the share of DJ sessions where the first track plays for less than 30 s. Lower is better.
 
 ## 5. Supporting metrics
@@ -59,6 +64,9 @@ Thresholds are proposed starting points to be set with the data team. They are n
 - **"Better exploration model":** high effort, and it doesn't remove the open-on-the-unknown risk. Deprioritized.
 
 ## 8. Experiment and learning
+
+![Experiment design](docs/experiment.png)
+
 **Test:** A/B test randomized by user, current DJ opener vs warm start, run for 2 weeks.
 **Decision rule:** ship if the north-star metric drops by a statistically significant amount and no guardrail crosses its threshold. If discovery falls, try warm start only on the first session of each day.
 **Bandit follow-up:** after the A/B, test the bandit opener against warm start, judged on the north star and on discovery share.
