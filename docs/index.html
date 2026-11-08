@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DJ Warm Start</title>
+<meta name="description" content="Interactive concept demo: warm start and 'less like this' for an AI DJ queue.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f8;--card:#fff;--ink:#111418;--mute:#5b6470;--line:#e3e6ea;--acc:#1db954;--accInk:#0b3d1f;--warn:#c2410c;--chip:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0f11;--card:#17191c;--ink:#f2f4f6;--mute:#9aa3ad;--line:#2a2e33;--acc:#1ed760;--accInk:#062b15;--warn:#fb923c;--chip:#22262b}}
+:root[data-theme="dark"]{--bg:#0e0f11;--card:#17191c;--ink:#f2f4f6;--mute:#9aa3ad;--line:#2a2e33;--acc:#1ed760;--accInk:#062b15;--warn:#fb923c;--chip:#22262b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 16px 48px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:600}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15;margin:6px 0 8px;letter-spacing:-.02em}
+.lede{color:var(--mute);max-width:640px;margin:0 0 24px}
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:20px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.now{display:flex;gap:14px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.art{width:64px;height:64px;border-radius:10px;flex:none;display:grid;place-items:center;font-weight:700;color:#fff}
+.dj{font-size:13px;color:var(--mute);margin-top:12px;min-height:40px}.dj b{color:var(--ink)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-weight:500}
+.sw{width:40px;height:22px;border-radius:99px;background:var(--line);position:relative;transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+input:checked+.sw{background:var(--acc)}input:checked+.sw::after{left:21px}.toggle input{position:absolute;opacity:0}
+button{font:inherit;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:99px;padding:8px 14px;cursor:pointer;font-weight:500}
+button:hover{border-color:var(--mute)}button.primary{background:var(--acc);color:var(--accInk);border-color:transparent}
+ol{list-style:none;margin:0;padding:0}li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+li:first-child{border-top:0}.mini{width:36px;height:36px;border-radius:6px;flex:none}
+.t{flex:1;min-width:0}.t div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.t .s{color:var(--mute);font-size:13px}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--chip);color:var(--mute);font-weight:600}
+.tag.fav{color:var(--accInk);background:var(--acc)}.risk{font-variant-numeric:tabular-nums;font-size:13px;color:var(--mute);width:56px;text-align:right}
+.stat{font-size:40px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.small{font-size:13px;color:var(--mute)}h2{font-size:16px;margin:0 0 6px}
+.note{margin-top:16px;font-size:12px;color:var(--mute);border-left:3px solid var(--warn);padding-left:10px}
+.theme{position:fixed;top:12px;right:12px;padding:6px 10px;font-size:13px}
+</style></head><body>
+<button class="theme" id="theme" aria-label="Toggle theme">Theme</button>
+<main>
+<div class="eyebrow">Product concept · Spotify AI DJ</div>
+<h1>Earn trust in the first 30 seconds.</h1>
+<p class="lede">Listeners skip when the DJ's first pick misses. Warm start opens with a familiar favorite before exploring, and "less like this" re-ranks what comes next in one tap.</p>
+<div class="grid">
+<section class="card" aria-label="DJ queue">
+ <div class="now"><div class="art" id="art"></div><div><div class="small">Now playing</div><div id="nowT" style="font-weight:600;font-size:17px"></div><div class="small" id="nowA"></div></div></div>
+ <div class="dj" id="dj"></div>
+ <div class="controls">
+  <label class="toggle"><input type="checkbox" id="warm" checked><span class="sw"></span>Warm start</label>
+  <button id="less">👎 Less like this</button><button class="primary" id="reset">New session</button>
+ </div>
+ <div class="small" style="margin-bottom:4px">Up next</div><ol id="queue"></ol>
+</section>
+<aside class="card">
+ <h2>Predicted first-30s skip risk</h2>
+ <div class="stat" id="risk"></div>
+ <div class="small" id="riskWhy"></div>
+ <h2 style="margin-top:20px">Success metric</h2>
+ <div class="small">Skip rate in the first 30 seconds of a session. Guardrails: session length, discovery share (new tracks played ≥30s), "less like this" usage.</div>
+ <h2 style="margin-top:20px">Not building</h2><div class="small">Voice chat with the DJ.</div>
+ <div class="note">Mock catalog and illustrative risk scores. Not Spotify data, not real results.</div>
+</aside></div></main>
+<script>
+const G=["Indie","Hip-hop","Lo-fi","Pop","Jazz"],C={Indie:"#7c5cff",["Hip-hop"]:"#e5484d",["Lo-fi"]:"#3e9bd6",Pop:"#e2a400",Jazz:"#12a594"};
+const CAT=[["Golden Hour Drive","Kite Lines","Indie",1],["Paper Planes Again","Kite Lines","Indie",0],["Late Bus Home","Sora Blue","Lo-fi",1],["Rain on Tin","Sora Blue","Lo-fi",0],["Corner Store","MC Atlas","Hip-hop",0],["Big Steps","MC Atlas","Hip-hop",1],["Neon Gum","Lia Park","Pop",0],["Two Left Feet","Lia Park","Pop",0],["Blue Room","The Quiet Five","Jazz",0],["Moth Waltz","The Quiet Five","Jazz",0],["Static Bloom","Fernway","Indie",0],["Slow Orbit","Pillowtalk","Lo-fi",0]]
+ .map(([t,a,g,f])=>({t,a,g,fav:!!f}));
+let disliked={},queue=[],now;
+const base=x=>(x.fav?.14:.38);const pen=x=>(disliked[x.g]||0)*.18;
+const score=x=>base(x)+pen(x)+(x.seed||0);
+function build(){const warm=document.getElementById("warm").checked;
+ let pool=CAT.map(x=>({...x,seed:Math.random()*.06}));
+ // exploration-first: DJ leads with something new
+ pool.sort((a,b)=>(a.fav-b.fav)||score(a)-score(b));
+ if(warm){const i=pool.findIndex(x=>x.fav&&!disliked[x.g]);if(i>=0)pool.unshift(pool.splice(i,1)[0]);}
+ now=pool.shift();queue=rerank(pool);render();}
+function rerank(p){const[h,...r]=p;return h&&h.fav&&document.getElementById("warm").checked?[...r].sort((a,b)=>score(a)-score(b)):[...p].sort((a,b)=>score(a)-score(b));}
+function render(){const art=document.getElementById("art");art.style.background=C[now.g];art.textContent=now.t[0];
+ nowT.textContent=now.t;nowA.textContent=now.a+" · "+now.g;
+ dj.innerHTML=now.fav?`<b>DJ:</b> "Starting with one you love, ${now.a}. Then something new in ${now.g}."`:`<b>DJ:</b> "Let's try something fresh: ${now.a}."`;
+ queue_el.innerHTML=queue.slice(0,5).map(x=>`<li><div class="mini" style="background:${C[x.g]}"></div><div class="t"><div>${x.t}</div><div class="s">${x.a} · ${x.g}</div></div><span class="tag ${x.fav?"fav":""}">${x.fav?"Favorite":"New"}</span><span class="risk">${Math.round(score(x)*100)}%</span></li>`).join("");
+ const r=Math.min(.95,base(now)+pen(now));risk.textContent=Math.round(r*100)+"%";
+ riskWhy.textContent=now.fav?"Opener is a familiar favorite: low early-skip risk.":"Opener is new to this listener: higher early-skip risk.";}
+const queue_el=document.getElementById("queue");
+less.onclick=()=>{disliked[now.g]=(disliked[now.g]||0)+1;now=queue.shift()||now;queue=[...queue].sort((a,b)=>score(a)-score(b));render();};
+reset.onclick=()=>{disliked={};build();};warm.onchange=build;
+theme.onclick=()=>{const d=document.documentElement,cur=d.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");d.dataset.theme=cur==="dark"?"light":"dark";};
+build();
+</script></body></html>

@@ -1,0 +1,18 @@
+[SYNTHETIC SAMPLE - run on your own export for real numbers]
+sessions=231 plays=2546
+early-skip rate by position:
+pos_b
+1     0.364
+2     0.290
+3     0.277
+4     0.307
+5     0.284
+6     0.255
+7     0.321
+8     0.335
+9     0.331
+10    0.306
+first-track skip: new=50.4% familiar=19.8%
+sessions opening on a new track: 54.1%
+first-track skip today=36.4% -> warm start (sim)=19.8%
+Caveat: observational; listeners may pick familiar openers on purpose, so this is an upper bound, not a causal effect.
