@@ -41,14 +41,14 @@ li:first-child{border-top:0}.mini{width:36px;height:36px;border-radius:6px;flex:
 <main>
 <div class="eyebrow">Product concept · Spotify AI DJ</div>
 <h1>Earn trust in the first 30 seconds.</h1>
-<p class="lede">Listeners skip when the DJ's first pick misses. Warm start opens with a familiar favorite before exploring, and "less like this" re-ranks what comes next in one tap.</p>
+<p class="lede">First impressions decide a session. Opening with a known favorite before exploring lowers early skips, while one-tap feedback keeps the queue adaptive.</p>
 <div class="grid">
 <section class="card" aria-label="DJ queue">
  <div class="now"><div class="art" id="art"></div><div><div class="small">Now playing</div><div id="nowT" style="font-weight:600;font-size:17px"></div><div class="small" id="nowA"></div></div></div>
  <div class="dj" id="dj"></div>
  <div class="controls">
   <label class="toggle"><input type="checkbox" id="warm" checked><span class="sw"></span>Warm start</label>
-  <button id="less">👎 Less like this</button><button class="primary" id="reset">New session</button>
+  <button id="less">Less like this</button><button class="primary" id="reset">New session</button>
  </div>
  <div class="small" style="margin-bottom:4px">Up next</div><ol id="queue"></ol>
 </section>
@@ -59,14 +59,14 @@ li:first-child{border-top:0}.mini{width:36px;height:36px;border-radius:6px;flex:
  <h2 style="margin-top:20px">Success metric</h2>
  <div class="small">Skip rate in the first 30 seconds of a session. Guardrails: session length, discovery share (new tracks played ≥30s), "less like this" usage.</div>
  <h2 style="margin-top:20px">Not building</h2><div class="small">Voice chat with the DJ.</div>
- <div class="note">Mock catalog and illustrative risk scores. Not Spotify data, not real results.</div>
+ <div class="note">Illustrative catalog and modeled risk scores. Not Spotify data.</div>
 </aside></div>
 <section class="card" style="margin-top:20px" aria-label="Bandit">
- <h2>Bandit: which opener, when?</h2>
+ <h2>Adaptive opener: Thompson sampling by time of day</h2>
  <div class="small">A Thompson sampler picks the opener per time of day: familiar favorite or new discovery. Each arm keeps a Beta posterior on "not skipped in 30 s", and the sampler plays the arm with the highest random draw, so the weaker arm still gets tried now and then.</div>
  <div class="controls"><button class="primary" id="banditGo">Simulate 500 sessions</button><span class="small" id="banditStat"></span></div>
  <div class="bgrid" id="bandit"></div>
- <div class="note">Simulation with assumed skip probabilities (synthetic). Label shows how often the sampler picked each arm; the bar is its estimated keep rate.</div>
+ <div class="note">Simulation with assumed skip probabilities (synthetic). Labels show selection share per arm; bars show the posterior mean keep rate.</div>
 </section></main>
 <script>
 const G=["Indie","Hip-hop","Lo-fi","Pop","Jazz"],C={Indie:"#7c5cff",["Hip-hop"]:"#e5484d",["Lo-fi"]:"#3e9bd6",Pop:"#e2a400",Jazz:"#12a594"};
