@@ -6,7 +6,7 @@
 
 ![60-second walkthrough](docs/walkthrough.gif)
 
-**▶ [Live demo](https://akhilesh360.github.io/spotify-dj-warm-start/)** · **🎬 [Full video](docs/demo.webm)** · [Demo script](docs/demo-script.md)
+**Live demo: [akhilesh360.github.io/spotify-dj-warm-start](https://akhilesh360.github.io/spotify-dj-warm-start/)**
 
 ## How it works
 
