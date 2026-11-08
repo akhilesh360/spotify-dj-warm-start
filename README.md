@@ -2,9 +2,9 @@
 
 > **PM case study + working prototype** · Music streaming / AI personalization · Spotify Extended Streaming History schema (synthetic sample included; run it on your own export)
 
-![Demo](docs/hero.png)
+![60-second walkthrough](docs/walkthrough.gif)
 
-**▶ [Live demo](https://akhilesh360.github.io/spotify-dj-warm-start/)** · **🎬 [60-second walkthrough](docs/demo.webm)** · [Demo script](docs/demo-script.md)
+**▶ [Live demo](https://akhilesh360.github.io/spotify-dj-warm-start/)** · **🎬 [Full video](docs/demo.webm)** · [Demo script](docs/demo-script.md)
 
 ## How it works
 
