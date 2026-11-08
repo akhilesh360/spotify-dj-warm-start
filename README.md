@@ -8,29 +8,7 @@
 
 ## How it works
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontSize":"18px","fontFamily":"Inter, Helvetica, Arial, sans-serif","lineColor":"#64748b"},"flowchart":{"curve":"basis","nodeSpacing":40,"rankSpacing":50}}}%%
-flowchart LR
-  A(["<b>Problem</b><br/>First DJ pick misses,<br/>listener skips"])
-  B(["<b>Data</b><br/>Skips by position<br/>in session"])
-  C(["<b>Insight</b><br/>Familiar openers<br/>get skipped less"])
-  D(["<b>Feature</b><br/>Warm start +<br/>Less like this"])
-  E(["<b>North Star</b><br/>First-30s skip rate"])
-  F(["<b>A/B test</b><br/>Ship if skips drop<br/>and discovery holds"])
-  A --> B --> C --> D --> E --> F
-  classDef problem fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:#7f1d1d,font-weight:bold
-  classDef data fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0c4a6e,font-weight:bold
-  classDef insight fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#3b0764,font-weight:bold
-  classDef feature fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d,font-weight:bold
-  classDef metric fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f,font-weight:bold
-  classDef test fill:#f1f5f9,stroke:#334155,stroke-width:2px,color:#0f172a,font-weight:bold
-  class A problem
-  class B data
-  class C insight
-  class D feature
-  class E metric
-  class F test
-```
+![How it works](docs/flow.png)
 
 ## 1. User and problem
 People who open AI DJ for low-effort listening while commuting, working or cooking. They want music they like right away, and they are open to new music once they trust the DJ. Today the DJ often opens by exploring. When that first pick misses, people skip it, and an early miss tells them the DJ doesn't know them.
